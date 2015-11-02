@@ -1,0 +1,14 @@
+PODS:
+  - INOMessageTextBox (0.1.0)
+
+DEPENDENCIES:
+  - INOMessageTextBox (from `../`)
+
+EXTERNAL SOURCES:
+  INOMessageTextBox:
+    :path: "../"
+
+SPEC CHECKSUMS:
+  INOMessageTextBox: 7ed896f2ebb36a944ca0f9a36ba1ac792a133e61
+
+COCOAPODS: 0.38.2

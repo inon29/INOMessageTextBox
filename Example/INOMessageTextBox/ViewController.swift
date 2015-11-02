@@ -7,12 +7,17 @@
 //
 
 import UIKit
+import INOMessageTextBox
 
 class ViewController: UIViewController {
 
+    @IBOutlet weak var _textBox: INOMessageTextBox!
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
+        _textBox.rightButtonTouchEvent = { (textBox: INOMessageTextBox, text: String) -> Void in
+            print(text)
+        }
     }
 
     override func didReceiveMemoryWarning() {
