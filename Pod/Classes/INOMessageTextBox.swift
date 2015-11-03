@@ -34,6 +34,14 @@ public class INOMessageTextBox : UIView, UITextViewDelegate {
             return _contentSizeDidChangeEvent
         }
     }
+    public var placeHolder: String {
+        set(holder) {
+            _textView.placeholder = holder
+        }
+        get {
+           return _textView.placeholder
+        }
+    }
     internal var _contentSizeDidChangeEvent: TextBoxContentSizeDidChangeEvent?
     internal var _rightButtonTouchEvent: TouchRightButtonEvent?
     internal var _heightConstraint: NSLayoutConstraint?
@@ -140,6 +148,8 @@ public class INOMessageTextBox : UIView, UITextViewDelegate {
                     differenceHeight: self.bounds.height - _boxBounds.height)
             }
             _boxBounds = self.bounds
+            // 初期サイズの設定時にInsetが変更されてしまうことがあるため0クリアする
+            self._textView.contentInset = UIEdgeInsetsMake(0, 0, 0, 0)
         }
     }
     
@@ -153,8 +163,6 @@ public class INOMessageTextBox : UIView, UITextViewDelegate {
         _textView.flashScrollIndicators()
         
         self._heightConstraint?.constant = self._textView.currentHeight() + (_textBoxInset.top + _textBoxInset.bottom)
-        self.setNeedsUpdateConstraints()
-        self._textView.setNeedsUpdateConstraints()
         
         if textView.text.characters.count > 0 {
             _rightButtonRightMarginC?.constant = _textBoxInset.right
@@ -165,6 +173,8 @@ public class INOMessageTextBox : UIView, UITextViewDelegate {
             _rightButtonWidthC?.constant = 0
         }
         
+        self.setNeedsUpdateConstraints()
+        self._textView.setNeedsUpdateConstraints()
         UIView.animateWithDuration(0.35) {
             self._textView.layoutIfNeeded()
             self.setNeedsLayout()

@@ -4,6 +4,19 @@ import UIKit
 public class INOPlaceholderTextView : UITextView {
     
     // MARK: - property
+    public var placeholder: String {
+        set(text) {
+            // 現在のプレースホルダと同じ場合は更新しない
+            guard text != _placeholderTextLabel?.text else {
+                return
+            }
+            _placeholderTextLabel?.text = text
+            _placeholderText = text
+        }
+        get {
+            return _placeholderText
+        }
+    }
     @IBInspectable var _placeholderText: String = ""
     private var _placeholderTextLabel: UILabel?
     private let _placeholderTextColor: UIColor = UIColor.lightGrayColor()
@@ -65,19 +78,5 @@ public class INOPlaceholderTextView : UITextView {
     */
     @objc private func textChanged(notification: NSNotification?) -> Void {
         _placeholderTextLabel?.hidden = !self.text.isEmpty
-    }
-    
-    // MARK: - Getter/Setter
-    /**
-    プレースホルダラベルのセット
-    
-    - parameter placeholder: プレースホルダ文字列
-    */
-    internal func setPlaceholder(placeholder: String) -> Void {
-        // 現在のプレースホルダと同じ場合は更新しない
-        guard placeholder != _placeholderTextLabel?.text else {
-            return
-        }
-        _placeholderTextLabel?.text = placeholder
     }
 }
