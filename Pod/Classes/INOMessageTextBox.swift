@@ -39,7 +39,7 @@ public class INOMessageTextBox : UIView, UITextViewDelegate {
             _textView.placeholder = holder
         }
         get {
-           return _textView.placeholder
+            return _textView.placeholder
         }
     }
     internal var _contentSizeDidChangeEvent: TextBoxContentSizeDidChangeEvent?
@@ -67,12 +67,67 @@ public class INOMessageTextBox : UIView, UITextViewDelegate {
         _rightButtonTouchEvent = nil
         self.removeObserver(self, forKeyPath: NSStringFromSelector("bounds"))
     }
-  
+    
+    // MARK: - Public
+    public override func resignFirstResponder() -> Bool {
+        _textView.resignFirstResponder()
+        return super.resignFirstResponder()
+    }
+   
+    // テキストの設定
+    public var text: String {
+        set (str) {
+            _textView.text = str
+            textViewDidChange(_textView)
+        }
+        get {
+            return _textView.text
+        }
+    }
+    
+    public override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
+        if object === self && keyPath == NSStringFromSelector("bounds") {
+            if !CGRectEqualToRect(_boxBounds, CGRectZero) {
+                self._contentSizeDidChangeEvent?(
+                    textBox: self,
+                    differenceWidth: self.bounds.width - _boxBounds.width,
+                    differenceHeight: self.bounds.height - _boxBounds.height)
+            }
+            _boxBounds = self.bounds
+            // 初期サイズの設定時にInsetが変更されてしまうことがあるため0クリアする
+            self._textView.contentInset = UIEdgeInsetsMake(0, 0, 0, 0)
+        }
+    }
+    
+    // MARK: - UITextViewDelegate
+    public func textViewDidChange(textView: UITextView) {
+        _textView.flashScrollIndicators()
+        
+        self._heightConstraint?.constant = self._textView.currentHeight() + (_textBoxInset.top + _textBoxInset.bottom)
+        
+        if textView.text.characters.count > 0 {
+            _rightButtonRightMarginC?.constant = _textBoxInset.right
+            _rightButtonWidthC?.constant = _rightButtonSize.width
+            self._textView.setNeedsUpdateConstraints()
+        } else {
+            _rightButtonRightMarginC?.constant = 0
+            _rightButtonWidthC?.constant = 0
+        }
+        
+        self.setNeedsUpdateConstraints()
+        self._textView.setNeedsUpdateConstraints()
+        UIView.animateWithDuration(0.35) {
+            self._textView.layoutIfNeeded()
+            self.setNeedsLayout()
+            self.layoutIfNeeded()
+        }
+    }
+    
     // MARK: - Private
     /**
-     Viewの高さに制約を設定する
-     
-     */
+    Viewの高さに制約を設定する
+    
+    */
     private func initHeightConstraint() -> Void {
         // 現在設定されている制約に高さ制約があればセット
         for const : NSLayoutConstraint in self.constraints {
@@ -94,7 +149,7 @@ public class INOMessageTextBox : UIView, UITextViewDelegate {
             _heightConstraint = height
         }
     }
-   
+    
     /**
      Subviewの初期化
      */
@@ -139,48 +194,11 @@ public class INOMessageTextBox : UIView, UITextViewDelegate {
         
     }
     
-    public override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
-        if object === self && keyPath == NSStringFromSelector("bounds") {
-            if !CGRectEqualToRect(_boxBounds, CGRectZero) {
-                self._contentSizeDidChangeEvent?(
-                    textBox: self,
-                    differenceWidth: self.bounds.width - _boxBounds.width,
-                    differenceHeight: self.bounds.height - _boxBounds.height)
-            }
-            _boxBounds = self.bounds
-            // 初期サイズの設定時にInsetが変更されてしまうことがあるため0クリアする
-            self._textView.contentInset = UIEdgeInsetsMake(0, 0, 0, 0)
-        }
-    }
-    
     // MARK: - internal
     internal func touchRightButton(sender: UIButton) -> Void {
         _rightButtonTouchEvent?(textBox: self, text: _textView.text)
     }
     
-    // MARK: - UITextViewDelegate
-    public func textViewDidChange(textView: UITextView) {
-        _textView.flashScrollIndicators()
-        
-        self._heightConstraint?.constant = self._textView.currentHeight() + (_textBoxInset.top + _textBoxInset.bottom)
-        
-        if textView.text.characters.count > 0 {
-            _rightButtonRightMarginC?.constant = _textBoxInset.right
-            _rightButtonWidthC?.constant = _rightButtonSize.width
-            self._textView.setNeedsUpdateConstraints()
-        } else {
-            _rightButtonRightMarginC?.constant = 0
-            _rightButtonWidthC?.constant = 0
-        }
-        
-        self.setNeedsUpdateConstraints()
-        self._textView.setNeedsUpdateConstraints()
-        UIView.animateWithDuration(0.35) {
-            self._textView.layoutIfNeeded()
-            self.setNeedsLayout()
-            self.layoutIfNeeded()
-        }
-    }
 }
 
 extension UIView {

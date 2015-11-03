@@ -75,5 +75,6 @@ public class INOMessageTextView: INOPlaceholderTextView {
         self.layer.borderColor = UIColor.grayColor().CGColor
         self.layer.cornerRadius = 3
         self.font = UIFont.systemFontOfSize(kDefaultFontSize)
+        self.showsHorizontalScrollIndicator = false
     }
 }
