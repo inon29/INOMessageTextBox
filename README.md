@@ -22,7 +22,7 @@ pod "INOMessageTextBox"
 
 ## Author
 
-Your Name Heiya, morooka-akira@kayac.com
+inon29, now276never0@gmail.com 
 
 ## License
 
