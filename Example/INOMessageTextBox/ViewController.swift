@@ -22,6 +22,7 @@ class ViewController: UIViewController {
         _textBox.contentSizeDidChangeEvent = { (textBox: INOMessageTextBox, differenceWidth: CGFloat, differenceHeight: CGFloat) -> Void in
             print("diff width: ", differenceWidth,"height: ", differenceHeight)
         }
+        _textBox.placeHolder = "PlaceHolder"
         
         NSNotificationCenter.defaultCenter().addObserver(self,
             selector: "keyboardWillShow:",

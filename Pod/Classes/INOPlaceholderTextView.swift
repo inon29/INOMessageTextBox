@@ -10,8 +10,15 @@ public class INOPlaceholderTextView : UITextView {
             guard text != _placeholderTextLabel?.text else {
                 return
             }
+            _placeholderTextLabel?.frame = CGRectMake(
+                _placeholderInset.left,
+                _placeholderInset.top,
+                self.bounds.size.width - _placeholderInset.top - _placeholderInset.left,
+                0)
+            _placeholderTextLabel?.font = self.font
             _placeholderTextLabel?.text = text
             _placeholderText = text
+            _placeholderTextLabel?.sizeToFit()
         }
         get {
             return _placeholderText
@@ -20,6 +27,7 @@ public class INOPlaceholderTextView : UITextView {
     @IBInspectable var _placeholderText: String = ""
     private var _placeholderTextLabel: UILabel?
     private let _placeholderTextColor: UIColor = UIColor.lightGrayColor()
+    private let _placeholderInset = UIEdgeInsetsMake(8.0, 5.0, 8.0, 5.0)
     
     // MARK: - init/deinit
     required public init?(coder aDecoder: NSCoder) {
@@ -36,6 +44,7 @@ public class INOPlaceholderTextView : UITextView {
         let notificationCenter = NSNotificationCenter.defaultCenter()
         notificationCenter.addObserver(self, selector: "textChanged:",
             name: UITextViewTextDidChangeNotification, object: nil)
+        initPlaceholderTextLabel();
     }
     
     deinit {
@@ -55,7 +64,11 @@ public class INOPlaceholderTextView : UITextView {
             return
         }
         let label = UILabel()
-        label.frame = CGRectMake(5, 8, self.bounds.size.width - 16,0)
+        label.frame = CGRectMake(
+            _placeholderInset.left,
+            _placeholderInset.top,
+            self.bounds.size.width - _placeholderInset.top - _placeholderInset.left,
+            0)
         label.lineBreakMode = NSLineBreakMode.ByWordWrapping
         label.numberOfLines = 0
         label.font = self.font
