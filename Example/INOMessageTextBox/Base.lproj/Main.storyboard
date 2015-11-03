@@ -17,8 +17,26 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="wpG-1r-vlP">
+                                <rect key="frame" x="0.0" y="0.0" width="600" height="543"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <prototypes>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" restorationIdentifier="Cell" selectionStyle="default" indentationWidth="10" reuseIdentifier="Cell" id="h2b-15-Cwd">
+                                        <rect key="frame" x="0.0" y="28" width="600" height="44"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="h2b-15-Cwd" id="yZe-HM-P0Y">
+                                            <rect key="frame" x="0.0" y="0.0" width="600" height="43"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                </prototypes>
+                                <connections>
+                                    <outlet property="dataSource" destination="vXZ-lx-hvc" id="38A-ci-jvS"/>
+                                    <outlet property="delegate" destination="vXZ-lx-hvc" id="zl8-Ug-a3c"/>
+                                </connections>
+                            </tableView>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="TBt-Et-aNv" customClass="INOMessageTextBox" customModule="INOMessageTextBox">
-                                <rect key="frame" x="0.0" y="143" width="600" height="57"/>
+                                <rect key="frame" x="0.0" y="543" width="600" height="57"/>
                                 <color key="backgroundColor" red="0.0" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="57" id="rRA-Mn-s4v"/>
@@ -28,9 +46,13 @@
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="TBt-Et-aNv" firstAttribute="top" secondItem="jyV-Pf-zRb" secondAttribute="bottom" constant="300" id="4GB-mV-Dug"/>
+                            <constraint firstItem="wpG-1r-vlP" firstAttribute="leading" secondItem="kh9-bI-dsS" secondAttribute="leading" id="Jdo-T5-yTs"/>
                             <constraint firstItem="TBt-Et-aNv" firstAttribute="leading" secondItem="kh9-bI-dsS" secondAttribute="leading" id="KQt-Rb-PWg"/>
-                            <constraint firstItem="2fi-mo-0CV" firstAttribute="top" secondItem="TBt-Et-aNv" secondAttribute="bottom" constant="400" id="Yd1-aI-aL1"/>
+                            <constraint firstItem="2fi-mo-0CV" firstAttribute="top" secondItem="TBt-Et-aNv" secondAttribute="bottom" id="Yd1-aI-aL1"/>
+                            <constraint firstItem="wpG-1r-vlP" firstAttribute="top" secondItem="kh9-bI-dsS" secondAttribute="top" id="ZkI-Pj-qPg"/>
+                            <constraint firstAttribute="trailing" secondItem="wpG-1r-vlP" secondAttribute="trailing" id="jzw-xb-E28"/>
                             <constraint firstItem="TBt-Et-aNv" firstAttribute="width" secondItem="kh9-bI-dsS" secondAttribute="width" id="ycH-ZU-PAr"/>
+                            <constraint firstItem="TBt-Et-aNv" firstAttribute="top" secondItem="wpG-1r-vlP" secondAttribute="bottom" id="ziZ-Ch-0En"/>
                         </constraints>
                         <variation key="default">
                             <mask key="constraints">
@@ -39,6 +61,8 @@
                         </variation>
                     </view>
                     <connections>
+                        <outlet property="_bottomConstraint" destination="Yd1-aI-aL1" id="cj6-kF-u2l"/>
+                        <outlet property="_tableView" destination="wpG-1r-vlP" id="nlw-aB-Uuc"/>
                         <outlet property="_textBox" destination="TBt-Et-aNv" id="RIV-SM-ndf"/>
                     </connections>
                 </viewController>

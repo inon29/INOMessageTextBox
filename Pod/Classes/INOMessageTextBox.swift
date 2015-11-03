@@ -15,6 +15,7 @@ import UIKit
  - parameter text:    TextViewに入力中テキスト
  */
 public typealias TouchRightButtonEvent = (textBox: INOMessageTextBox, text: String) -> Void
+public typealias TextBoxContentSizeDidChangeEvent = (textBox: INOMessageTextBox, differenceWidth: CGFloat, differenceHeight: CGFloat) -> Void
 
 public class INOMessageTextBox : UIView, UITextViewDelegate {
     public var rightButtonTouchEvent: TouchRightButtonEvent? {
@@ -25,6 +26,15 @@ public class INOMessageTextBox : UIView, UITextViewDelegate {
             return _rightButtonTouchEvent
         }
     }
+    public var contentSizeDidChangeEvent: TextBoxContentSizeDidChangeEvent? {
+        set(event) {
+            _contentSizeDidChangeEvent = event
+        }
+        get {
+            return _contentSizeDidChangeEvent
+        }
+    }
+    internal var _contentSizeDidChangeEvent: TextBoxContentSizeDidChangeEvent?
     internal var _rightButtonTouchEvent: TouchRightButtonEvent?
     internal var _heightConstraint: NSLayoutConstraint?
     internal var _rightButtonWidthC: NSLayoutConstraint?
@@ -33,6 +43,7 @@ public class INOMessageTextBox : UIView, UITextViewDelegate {
     internal var _rightButtonSize: CGSize!
     internal var _textView: INOMessageTextView!
     private var _textBoxInset = UIEdgeInsetsMake(8.0, 8.0, 8.0, 8.0)
+    private var _boxBounds = CGRectZero
     
     // MARK: - init
     required public init?(coder aDecoder: NSCoder) {
@@ -41,10 +52,12 @@ public class INOMessageTextBox : UIView, UITextViewDelegate {
         initSubviews()
         // 初期表示は、1行分の高さ固定
         _heightConstraint?.constant = _textView.initHeight() + (_textBoxInset.top + _textBoxInset.bottom)
+        self.addObserver(self, forKeyPath: NSStringFromSelector("bounds"), options: NSKeyValueObservingOptions.New, context: nil)
     }
     
     deinit {
         _rightButtonTouchEvent = nil
+        self.removeObserver(self, forKeyPath: NSStringFromSelector("bounds"))
     }
   
     // MARK: - Private
@@ -115,6 +128,19 @@ public class INOMessageTextBox : UIView, UITextViewDelegate {
         
         _rightButtonWidthC = constraint(firstItem: button, firstAttribute: NSLayoutAttribute.Width)
         _rightButtonRightMarginC = constraint(firstItem: self, firstAttribute: NSLayoutAttribute.Trailing)
+        
+    }
+    
+    public override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
+        if object === self && keyPath == NSStringFromSelector("bounds") {
+            if !CGRectEqualToRect(_boxBounds, CGRectZero) {
+                self._contentSizeDidChangeEvent?(
+                    textBox: self,
+                    differenceWidth: self.bounds.width - _boxBounds.width,
+                    differenceHeight: self.bounds.height - _boxBounds.height)
+            }
+            _boxBounds = self.bounds
+        }
     }
     
     // MARK: - internal
